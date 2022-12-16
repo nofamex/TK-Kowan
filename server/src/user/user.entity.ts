@@ -1,5 +1,6 @@
 import { Exclude } from 'class-transformer';
 import { Accomodation } from 'src/accomodation/acoomodation.entity';
+import { Booking } from 'src/booking/booking.entity';
 import {
   BaseEntity,
   Column,
@@ -22,4 +23,6 @@ export class User extends BaseEntity {
 
   @OneToMany((type) => Accomodation, (accomodation) => accomodation.user)
   listings: Accomodation[];
+
+  @OneToMany((type) => Booking, (booking) => booking.user) bookings: Booking[];
 }

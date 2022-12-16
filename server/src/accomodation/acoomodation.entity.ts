@@ -1,10 +1,11 @@
-import { Exclude } from 'class-transformer';
+import { Booking } from 'src/booking/booking.entity';
 import { User } from 'src/user/user.entity';
 import {
   BaseEntity,
   Column,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -23,4 +24,7 @@ export class Accomodation extends BaseEntity {
   public price: number;
 
   @ManyToOne((type) => User, (user) => user.listings) user: User;
+
+  @OneToMany((type) => Booking, (booking) => booking.accomodation)
+  bookings: Booking[];
 }

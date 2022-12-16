@@ -59,4 +59,12 @@ export class AccomodationService {
       data: accom,
     };
   }
+
+  async finAccom(id: number): Promise<Accomodation> {
+    const accom = await this.repository.findOne({
+      relations: { user: true },
+      where: { id: id },
+    });
+    return accom;
+  }
 }

@@ -9,5 +9,6 @@ import { UserModule } from 'src/user/user.module';
   imports: [TypeOrmModule.forFeature([Accomodation])],
   providers: [AccomodationService],
   controllers: [AccomodationController],
+  exports: [AccomodationService],
 })
 export class AccomodationModule {}
