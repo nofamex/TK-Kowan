@@ -4,6 +4,8 @@ import { UserModule } from './user/user.module';
 import 'dotenv/config';
 import { User } from './user/user.entity';
 import { AuthModule } from './auth/auth.module';
+import { AccomodationModule } from './accomodation/accomodation.module';
+import { Accomodation } from './accomodation/acoomodation.entity';
 
 @Module({
   imports: [
@@ -14,11 +16,12 @@ import { AuthModule } from './auth/auth.module';
       username: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [User],
+      entities: [User, Accomodation],
       synchronize: true,
     }),
     UserModule,
     AuthModule,
+    AccomodationModule,
   ],
   controllers: [],
   providers: [],

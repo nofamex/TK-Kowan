@@ -1,5 +1,12 @@
 import { Exclude } from 'class-transformer';
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Accomodation } from 'src/accomodation/acoomodation.entity';
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class User extends BaseEntity {
@@ -12,4 +19,7 @@ export class User extends BaseEntity {
   @Exclude()
   @Column({ type: 'varchar' })
   public password: string;
+
+  @OneToMany((type) => Accomodation, (accomodation) => accomodation.user)
+  listings: Accomodation[];
 }

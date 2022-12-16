@@ -1,6 +1,5 @@
 import { Controller, Inject } from '@nestjs/common';
-import { Body, Get, Post, Request, UseGuards } from '@nestjs/common/decorators';
-import { AuthGuard } from '@nestjs/passport/dist';
+import { Body, Post } from '@nestjs/common/decorators';
 import { LoginRequestDto, RegisterRequestDto, Response } from './auth.dto';
 import { AuthService } from './auth.service';
 

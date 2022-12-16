@@ -42,8 +42,8 @@ export class AuthService {
       error: [],
       data: {
         token: this.jwtService.sign({
+          id: user.id,
           username: user.username,
-          password: user.password,
         }),
       },
     };
