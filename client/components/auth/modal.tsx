@@ -1,12 +1,63 @@
+import { useCookie } from "next-cookie";
+import { useRouter } from "next/router";
 import { useState } from "react";
+import { useMutation, useQueryClient } from "react-query";
+import { toast } from "react-toastify";
+import { AuthDto } from "../../types/auth";
+import { httpClient } from "../../utils/httpClient";
 
 export default function AuthModal() {
-  const [type, setType] = useState<string>("LOGIN");
+  const queryClient = useQueryClient();
+  const cookie = useCookie();
+  const router = useRouter();
 
-  console.log(type);
+  const [type, setType] = useState<string>("LOGIN");
+  const [username, setUsername] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
 
   const handleRegisterClick = (t: string): void => {
     setType(t);
+  };
+
+  const loginHandler = useMutation(
+    (data: AuthDto) => {
+      return httpClient.post("/auth/login", data);
+    },
+    {
+      onSuccess: (res) => {
+        if (res.data.status === 200) {
+          queryClient.setQueryData("token", res.data.data);
+          cookie.set("token", res.data.data.token);
+          setInterval(() => router.reload(), 1500);
+        } else {
+          toast.error(res.data.error[0]);
+        }
+      },
+    }
+  );
+
+  const registerHandler = useMutation(
+    (data: AuthDto) => {
+      return httpClient.post("/auth/register", data);
+    },
+    {
+      onSuccess: (res) => {
+        if (res.data.status === 200) {
+          toast.success("registration complete");
+          setInterval(() => router.reload(), 1500);
+        } else {
+          toast.error(res.data.error[0]);
+        }
+      },
+    }
+  );
+
+  const submitHandler = () => {
+    if (type === "LOGIN") {
+      loginHandler.mutate({ username, password });
+    } else {
+      registerHandler.mutate({ username, password });
+    }
   };
 
   return (
@@ -22,11 +73,13 @@ export default function AuthModal() {
               type="text"
               placeholder="Username"
               className="input input-bordered w-full mb-4"
+              onChange={(e) => setUsername(e.target.value)}
             />
             <input
               type="password"
               placeholder="Password"
               className="input input-bordered w-full mb-4"
+              onChange={(e) => setPassword(e.target.value)}
             />
             {type === "LOGIN" && (
               <div
@@ -37,7 +90,7 @@ export default function AuthModal() {
               </div>
             )}
             <div className="w-full flex">
-              <button className="btn btn-white ml-auto">
+              <button className="btn btn-white ml-auto" onClick={submitHandler}>
                 {type === "LOGIN" ? "Login" : "Register"}
               </button>
             </div>

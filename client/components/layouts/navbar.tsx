@@ -1,7 +1,31 @@
 import Link from "next/link";
 import AuthModal from "../auth/modal";
+import { useCookie } from "next-cookie";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 
 export default function Navbar() {
+  const cookie = useCookie();
+  const router = useRouter();
+
+  const [isLogin, setIsLogin] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (cookie.has("token")) {
+      setIsLogin(true);
+    }
+  }, []);
+
+  const loginMenu = [
+    { href: "/listing", title: "My Listing" },
+    { href: "/booking", title: "My Booking" },
+  ];
+
+  const logoutHandler = () => {
+    cookie.remove("token");
+    setInterval(() => router.reload(), 1500);
+  };
+
   return (
     <>
       <AuthModal />
@@ -28,15 +52,30 @@ export default function Navbar() {
               tabIndex={0}
               className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
             >
-              <li>
-                <Link href="/listing">My Listing</Link>
-              </li>
-              <li>
-                <Link href="/booking">My Booking</Link>
-              </li>
-              <li>
-                <label htmlFor="auth-modal">login</label>
-              </li>
+              {isLogin &&
+                loginMenu.map((menu, index) => {
+                  return (
+                    <li key={index}>
+                      <Link href={menu.href}>{menu.title}</Link>
+                    </li>
+                  );
+                })}
+
+              {isLogin ? (
+                <li
+                  className="px-4 py-2 text-md cursor-pointer hover:bg-gray-200 rounded-md"
+                  onClick={logoutHandler}
+                >
+                  Logout
+                </li>
+              ) : (
+                <label
+                  htmlFor="auth-modal"
+                  className="px-4 py-2 text-md cursor-pointer hover:bg-gray-200 rounded-md"
+                >
+                  Login
+                </label>
+              )}
             </ul>
           </div>
         </div>
